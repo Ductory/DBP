@@ -9,7 +9,7 @@ import time
 from urllib.parse import urlencode
 
 def GetThread():
-    global tid, lastThread, paramProfile, uidlist
+    global fid, lastThread, paramProfile, uidlist
     for uid in uidlist: #遍历黑名单
         paramProfile['uid'] = uid
         paramProfile['sign'] = sign(paramProfile)
@@ -18,7 +18,7 @@ def GetThread():
         tmp = 0
         for i in response['post_list']:
             s = i['forum_id']
-            if s != tid: #没有在目标贴吧发帖
+            if s != fid: #没有在目标贴吧发帖
                 continue
             t = int(i['create_time']) #获取发帖时间
             if t > lastThread[uid]: #发了新贴
@@ -31,7 +31,7 @@ def GetThread():
     return
 
 def GetRepost():
-    global tid, lastRepost, paramRepost, uidlist
+    global fid, lastRepost, paramRepost, uidlist
     for uid in uidlist:
         paramRepost['uid'] = uid
         paramRepost['sign'] = sign(paramRepost)
@@ -40,7 +40,7 @@ def GetRepost():
         tmp = 0
         for i in response['post_list']:
             s = i['forum_id']
-            if s != int(tid): #没有在目标贴吧回帖
+            if s != int(fid): #没有在目标贴吧回帖
                 continue
             t = i['create_time']
             if t > lastRepost[uid]: #回了新帖
@@ -93,11 +93,8 @@ def initdict(uidlist):
         d[uid] = 0
     return d
 
-#指定贴吧
-#tid = '27779526' #最爱春雷吧id
-tid = '69399' #永动机吧id, 仅测试使用
 #黑名单uid列表
-uidlist = ['6317885792'] #何杂id
+uidlist = ['黑名单用户uid']
 lastRepost = lastThread = initdict(uidlist) #初始化字典
 #仅获取profile的前三个帖子, 若读取发帖会一次性读60个
 paramProfile = {'_client_type': '2',
@@ -110,8 +107,8 @@ paramRepost = {'rn': '20'}
 #fid请用 http://tieba.baidu.com/f/commit/share/fnameShareApi?ie=utf-8&fname=吧名 获取
 #tbs请用 http://tieba.baidu.com/dc/common/tbs 获取
 BDUSS = '你的BDUSS'
-fid = '你的fid'
 tbs = '你的tbs'
+fid = '目标贴吧的fid'
 
 paramDT = {'BDUSS': BDUSS,
            'fid': fid,
